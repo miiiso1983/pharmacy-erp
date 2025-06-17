@@ -1,0 +1,20 @@
+[phases.setup]
+nixPkgs = ['php81', 'php81Packages.composer']
+
+[phases.install]
+cmds = ['composer install --no-dev --optimize-autoloader']
+
+[phases.build]
+cmds = [
+  'mkdir -p storage/app/public storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache',
+  'chmod -R 775 storage bootstrap/cache',
+  'touch database/database.sqlite',
+  'cp .env.example .env || true',
+  'php artisan key:generate --force',
+  'php artisan config:cache',
+  'php artisan migrate --force',
+  'php artisan db:seed --force'
+]
+
+[start]
+cmd = 'php artisan serve --host=0.0.0.0 --port=$PORT'

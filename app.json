@@ -1,0 +1,53 @@
+{
+  "name": "Pharmacy ERP System",
+  "description": "نظام إدارة الصيدلية - Comprehensive pharmacy management system",
+  "keywords": ["laravel", "php", "pharmacy", "erp", "arabic"],
+  "website": "https://github.com/miiiso1983/pharmacy-erp",
+  "repository": "https://github.com/miiiso1983/pharmacy-erp",
+  "logo": "https://laravel.com/img/logomark.min.svg",
+  "success_url": "/",
+  "env": {
+    "APP_NAME": {
+      "description": "Application name",
+      "value": "نظام إدارة الصيدلية"
+    },
+    "APP_ENV": {
+      "description": "Application environment",
+      "value": "production"
+    },
+    "APP_DEBUG": {
+      "description": "Enable debug mode",
+      "value": "false"
+    },
+    "APP_KEY": {
+      "description": "Application encryption key",
+      "generator": "secret"
+    },
+    "APP_LOCALE": {
+      "description": "Application locale",
+      "value": "ar"
+    },
+    "DB_CONNECTION": {
+      "description": "Database connection type",
+      "value": "sqlite"
+    },
+    "LOG_CHANNEL": {
+      "description": "Log channel",
+      "value": "errorlog"
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/php"
+    }
+  ],
+  "scripts": {
+    "postdeploy": "php artisan migrate --force && php artisan db:seed --force"
+  }
+}
