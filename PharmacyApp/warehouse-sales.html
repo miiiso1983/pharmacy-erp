@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>مبيعات المخزن - نظام الصيدلية</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            direction: rtl;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .header-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1a1a1a;
+        }
+        
+        .back-btn {
+            background: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .warehouse-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .info-item {
+            text-align: center;
+        }
+        
+        .info-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1a1a1a;
+        }
+        
+        .currency {
+            color: #007AFF;
+        }
+        
+        .sales-actions {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        
+        .action-btn {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .action-btn:hover {
+            border-color: #007AFF;
+            background: #f0f8ff;
+            transform: translateY(-2px);
+        }
+        
+        .action-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .sales-summary {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 15px;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        
+        .summary-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .summary-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 5px;
+        }
+        
+        .summary-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .recent-sales {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .sales-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .sales-table th,
+        .sales-table td {
+            padding: 12px;
+            text-align: right;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .sales-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .sales-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-completed {
+            background: #e8f5e8;
+            color: #388e3c;
+        }
+        
+        .status-pending {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+        
+        .status-cancelled {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a1a1a;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .form-input, .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #007AFF;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            background: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .submit-btn:hover {
+            background: #0056CC;
+        }
+        
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .cart-total {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            padding: 15px;
+            background: #e3f2fd;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .sales-table {
+                font-size: 14px;
+            }
+            
+            .sales-table th,
+            .sales-table td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-top">
+            <div class="header-title" id="warehouseTitle">💰 مبيعات المخزن</div>
+            <button class="back-btn" onclick="window.location.href='warehouses.html'">← العودة للمخازن</button>
+        </div>
+        
+        <div class="warehouse-info" id="warehouseInfo">
+            <!-- سيتم ملؤها بواسطة JavaScript -->
+        </div>
+    </div>
+    
+    <div class="sales-actions">
+        <div class="section-title">إجراءات المبيعات</div>
+        <div class="actions-grid">
+            <button class="action-btn" onclick="openModal('newSale')">
+                <span class="action-icon">🛒</span>
+                بيع جديد
+            </button>
+            
+            <button class="action-btn" onclick="openModal('salesReport')">
+                <span class="action-icon">📊</span>
+                تقرير المبيعات
+            </button>
+            
+            <button class="action-btn" onclick="openModal('returns')">
+                <span class="action-icon">↩️</span>
+                المرتجعات
+            </button>
+            
+            <button class="action-btn" onclick="openModal('customers')">
+                <span class="action-icon">👥</span>
+                العملاء
+            </button>
+        </div>
+    </div>
+    
+    <div class="sales-summary">
+        <div class="section-title">ملخص المبيعات اليوم</div>
+        <div class="summary-grid">
+            <div class="summary-card">
+                <div class="summary-number currency">1,250,000 د.ع</div>
+                <div class="summary-label">إجمالي المبيعات</div>
+            </div>
+            
+            <div class="summary-card">
+                <div class="summary-number">47</div>
+                <div class="summary-label">عدد المعاملات</div>
+            </div>
+            
+            <div class="summary-card">
+                <div class="summary-number currency">26,596 د.ع</div>
+                <div class="summary-label">متوسط قيمة المعاملة</div>
+            </div>
+            
+            <div class="summary-card">
+                <div class="summary-number currency">187,500 د.ع</div>
+                <div class="summary-label">الربح المحقق</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="recent-sales">
+        <div class="section-title">المبيعات الأخيرة</div>
+        
+        <table class="sales-table">
+            <thead>
+                <tr>
+                    <th>رقم المعاملة</th>
+                    <th>العميل</th>
+                    <th>المنتجات</th>
+                    <th>المبلغ</th>
+                    <th>الوقت</th>
+                    <th>الحالة</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>#2024001</td>
+                    <td>أحمد محمد</td>
+                    <td>باراسيتامول، فيتامين د</td>
+                    <td class="currency">45,000 د.ع</td>
+                    <td>14:30</td>
+                    <td><span class="status-badge status-completed">مكتملة</span></td>
+                    <td>
+                        <button onclick="viewSale(2024001)" style="background: none; border: none; color: #007AFF; cursor: pointer;">عرض</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>#2024002</td>
+                    <td>فاطمة علي</td>
+                    <td>أسبرين، شراب سعال</td>
+                    <td class="currency">32,500 د.ع</td>
+                    <td>14:15</td>
+                    <td><span class="status-badge status-completed">مكتملة</span></td>
+                    <td>
+                        <button onclick="viewSale(2024002)" style="background: none; border: none; color: #007AFF; cursor: pointer;">عرض</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>#2024003</td>
+                    <td>محمد حسن</td>
+                    <td>مضاد حيوي، مسكن</td>
+                    <td class="currency">78,000 د.ع</td>
+                    <td>13:45</td>
+                    <td><span class="status-badge status-pending">معلقة</span></td>
+                    <td>
+                        <button onclick="viewSale(2024003)" style="background: none; border: none; color: #007AFF; cursor: pointer;">عرض</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>#2024004</td>
+                    <td>سارة أحمد</td>
+                    <td>فيتامينات متعددة</td>
+                    <td class="currency">25,000 د.ع</td>
+                    <td>13:20</td>
+                    <td><span class="status-badge status-completed">مكتملة</span></td>
+                    <td>
+                        <button onclick="viewSale(2024004)" style="background: none; border: none; color: #007AFF; cursor: pointer;">عرض</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>#2024005</td>
+                    <td>عمر جعفر</td>
+                    <td>دواء ضغط، سكر</td>
+                    <td class="currency">95,500 د.ع</td>
+                    <td>12:55</td>
+                    <td><span class="status-badge status-cancelled">ملغية</span></td>
+                    <td>
+                        <button onclick="viewSale(2024005)" style="background: none; border: none; color: #007AFF; cursor: pointer;">عرض</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Modal بيع جديد -->
+    <div class="modal" id="newSaleModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">بيع جديد</div>
+                <button class="close-btn" onclick="closeModal('newSale')">&times;</button>
+            </div>
+            
+            <form id="newSaleForm">
+                <div class="form-group">
+                    <label class="form-label">العميل</label>
+                    <input type="text" class="form-input" id="customerName" placeholder="اسم العميل" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">رقم الهاتف</label>
+                        <input type="tel" class="form-input" id="customerPhone" placeholder="07xxxxxxxxx">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">نوع الدفع</label>
+                        <select class="form-select" id="paymentMethod" required>
+                            <option value="">اختر طريقة الدفع</option>
+                            <option value="cash">نقدي</option>
+                            <option value="card">بطاقة</option>
+                            <option value="credit">آجل</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">إضافة منتج</label>
+                    <div class="form-row">
+                        <select class="form-select" id="productSelect">
+                            <option value="">اختر المنتج</option>
+                            <option value="1" data-price="15000">باراسيتامول 500mg - 15,000 د.ع</option>
+                            <option value="2" data-price="8000">أسبرين 100mg - 8,000 د.ع</option>
+                            <option value="3" data-price="25000">مضاد حيوي - 25,000 د.ع</option>
+                            <option value="4" data-price="12000">فيتامين د - 12,000 د.ع</option>
+                            <option value="5" data-price="18000">شراب سعال - 18,000 د.ع</option>
+                        </select>
+                        <input type="number" class="form-input" id="productQuantity" placeholder="الكمية" min="1" value="1">
+                    </div>
+                    <button type="button" onclick="addToCart()" style="margin-top: 10px; padding: 8px 15px; background: #34C759; color: white; border: none; border-radius: 5px; cursor: pointer;">إضافة للسلة</button>
+                </div>
+                
+                <div id="cartItems">
+                    <!-- سيتم إضافة المنتجات هنا -->
+                </div>
+                
+                <div class="cart-total" id="cartTotal">
+                    الإجمالي: 0 د.ع
+                </div>
+                
+                <button type="submit" class="submit-btn">إتمام البيع</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // الحصول على معرف المخزن من URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const warehouseId = urlParams.get('id');
+        const warehouseName = decodeURIComponent(urlParams.get('name') || 'مخزن غير محدد');
+        
+        // بيانات المخزن التجريبية
+        const warehouseData = {
+            1: {
+                name: "المخزن الرئيسي - بغداد",
+                manager: "أحمد محمد",
+                phone: "07901234567",
+                products: 1247,
+                todaySales: 1250000,
+                monthSales: 15750000,
+                profit: 187500
+            },
+            2: {
+                name: "صيدلية النور - البصرة",
+                manager: "فاطمة علي",
+                phone: "07801234567",
+                products: 456,
+                todaySales: 850000,
+                monthSales: 8500000,
+                profit: 127500
+            }
+        };
+        
+        let cart = [];
+        let cartTotal = 0;
+        
+        // تحديث معلومات المخزن
+        function updateWarehouseInfo() {
+            document.getElementById('warehouseTitle').textContent = `💰 مبيعات ${warehouseName}`;
+            
+            const warehouse = warehouseData[warehouseId] || warehouseData[1];
+            
+            document.getElementById('warehouseInfo').innerHTML = `
+                <div class="info-item">
+                    <div class="info-label">المدير المسؤول</div>
+                    <div class="info-value">${warehouse.manager}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">عدد المنتجات</div>
+                    <div class="info-value">${warehouse.products.toLocaleString()}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">مبيعات اليوم</div>
+                    <div class="info-value currency">${warehouse.todaySales.toLocaleString()} د.ع</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">مبيعات الشهر</div>
+                    <div class="info-value currency">${warehouse.monthSales.toLocaleString()} د.ع</div>
+                </div>
+            `;
+        }
+        
+        // فتح وإغلاق النوافذ المنبثقة
+        function openModal(modalType) {
+            const modal = document.getElementById(modalType + 'Modal');
+            if (modal) {
+                modal.style.display = 'flex';
+            }
+        }
+        
+        function closeModal(modalType) {
+            const modal = document.getElementById(modalType + 'Modal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+        
+        // إضافة منتج للسلة
+        function addToCart() {
+            const productSelect = document.getElementById('productSelect');
+            const quantityInput = document.getElementById('productQuantity');
+            
+            if (!productSelect.value || !quantityInput.value) {
+                alert('يرجى اختيار المنتج والكمية');
+                return;
+            }
+            
+            const productName = productSelect.options[productSelect.selectedIndex].text.split(' - ')[0];
+            const productPrice = parseInt(productSelect.options[productSelect.selectedIndex].dataset.price);
+            const quantity = parseInt(quantityInput.value);
+            const total = productPrice * quantity;
+            
+            const cartItem = {
+                id: productSelect.value,
+                name: productName,
+                price: productPrice,
+                quantity: quantity,
+                total: total
+            };
+            
+            cart.push(cartItem);
+            updateCartDisplay();
+            
+            // إعادة تعيين النموذج
+            productSelect.value = '';
+            quantityInput.value = '1';
+        }
+        
+        // تحديث عرض السلة
+        function updateCartDisplay() {
+            const cartContainer = document.getElementById('cartItems');
+            cartTotal = 0;
+            
+            cartContainer.innerHTML = '';
+            
+            cart.forEach((item, index) => {
+                cartTotal += item.total;
+                
+                const cartItemDiv = document.createElement('div');
+                cartItemDiv.className = 'cart-item';
+                cartItemDiv.innerHTML = `
+                    <div>
+                        <strong>${item.name}</strong><br>
+                        <small>${item.quantity} × ${item.price.toLocaleString()} د.ع</small>
+                    </div>
+                    <div>
+                        <strong>${item.total.toLocaleString()} د.ع</strong>
+                        <button onclick="removeFromCart(${index})" style="margin-right: 10px; background: #ff4444; color: white; border: none; border-radius: 3px; padding: 2px 6px; cursor: pointer;">×</button>
+                    </div>
+                `;
+                cartContainer.appendChild(cartItemDiv);
+            });
+            
+            document.getElementById('cartTotal').textContent = `الإجمالي: ${cartTotal.toLocaleString()} د.ع`;
+        }
+        
+        // إزالة منتج من السلة
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartDisplay();
+        }
+        
+        // عرض تفاصيل المبيعة
+        function viewSale(saleId) {
+            alert(`عرض تفاصيل المبيعة #${saleId}\n\nسيتم فتح صفحة تفاصيل المبيعة مع:\n- تفاصيل المنتجات\n- معلومات العميل\n- طريقة الدفع\n- إمكانية الطباعة`);
+        }
+        
+        // معالجة نموذج البيع الجديد
+        document.getElementById('newSaleForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (cart.length === 0) {
+                alert('يرجى إضافة منتجات للسلة');
+                return;
+            }
+            
+            const customerName = document.getElementById('customerName').value;
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            
+            alert(`تم إتمام البيع بنجاح!\n\nالعميل: ${customerName}\nالمبلغ الإجمالي: ${cartTotal.toLocaleString()} د.ع\nطريقة الدفع: ${paymentMethod === 'cash' ? 'نقدي' : paymentMethod === 'card' ? 'بطاقة' : 'آجل'}\n\nرقم المعاملة: #${Date.now()}`);
+            
+            // إعادة تعيين النموذج والسلة
+            cart = [];
+            cartTotal = 0;
+            updateCartDisplay();
+            closeModal('newSale');
+            e.target.reset();
+        });
+        
+        // تحميل البيانات عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            updateWarehouseInfo();
+        });
+        
+        // إغلاق النوافذ المنبثقة عند النقر خارجها
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

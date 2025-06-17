@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار الخادم - نظام الصيدلية</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            direction: rtl;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+        }
+        .logo {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+        .title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 15px;
+        }
+        .subtitle {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .status {
+            background: #e8f5e8;
+            color: #388e3c;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+        .links {
+            display: grid;
+            gap: 15px;
+        }
+        .link {
+            background: #007AFF;
+            color: white;
+            text-decoration: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.3s ease;
+        }
+        .link:hover {
+            transform: translateY(-2px);
+        }
+        .info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            text-align: right;
+        }
+        .info h3 {
+            color: #1a1a1a;
+            margin-bottom: 15px;
+        }
+        .info p {
+            color: #666;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .server-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 14px;
+            text-align: left;
+            direction: ltr;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🏥💊</div>
+        <div class="title">نظام إدارة الصيدلية</div>
+        <div class="subtitle">Pharmacy ERP System</div>
+        
+        <div class="status">
+            ✅ الخادم يعمل بنجاح!
+        </div>
+        
+        <div class="links">
+            <a href="index.html" class="link">🏠 الصفحة الرئيسية</a>
+            <a href="login.html" class="link">🔐 تسجيل الدخول</a>
+            <a href="dashboard.html" class="link">📊 لوحة التحكم</a>
+            <a href="warehouses.html" class="link">🏪 إدارة المخازن</a>
+            <a href="warehouse-details.html?id=1&name=المخزن الرئيسي" class="link">📋 تفاصيل المخزن</a>
+            <a href="warehouse-sales.html?id=1&name=المخزن الرئيسي" class="link">💰 مبيعات المخزن</a>
+            <a href="warehouse-reports.html" class="link">📊 تقارير المخازن</a>
+        </div>
+        
+        <div class="info">
+            <h3>معلومات النظام:</h3>
+            <p><strong>🌐 الرابط:</strong> http://localhost:8080</p>
+            <p><strong>📱 للمحاكي:</strong> http://127.0.0.1:8080</p>
+            <p><strong>💰 العملة:</strong> الدينار العراقي (د.ع)</p>
+            <p><strong>🏪 المخازن:</strong> 5 مخازن متعددة</p>
+            <p><strong>🔄 النقل:</strong> نقل بين المخازن</p>
+            <p><strong>💰 المبيعات:</strong> منفصلة لكل مخزن</p>
+            
+            <div class="server-info">
+                <strong>Server Status:</strong><br>
+                Status: ✅ Running<br>
+                Port: 8080<br>
+                Protocol: HTTP<br>
+                Bind: 0.0.0.0<br>
+                Time: <span id="currentTime"></span>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // عرض الوقت الحالي
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = now.toLocaleString('ar-IQ');
+        }
+        
+        updateTime();
+        setInterval(updateTime, 1000);
+        
+        // اختبار الاتصال
+        fetch(window.location.href)
+            .then(response => {
+                if (response.ok) {
+                    console.log('✅ Server connection test successful');
+                } else {
+                    console.log('⚠️ Server response not OK');
+                }
+            })
+            .catch(error => {
+                console.log('❌ Server connection test failed:', error);
+            });
+    </script>
+</body>
+</html>

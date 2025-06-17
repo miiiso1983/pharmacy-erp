@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>تسجيل الدخول - نظام الصيدلية</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            direction: rtl;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .login-container {
+            max-width: 400px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: #007AFF;
+            border-radius: 20px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+            box-shadow: 0 10px 20px rgba(0, 122, 255, 0.3);
+        }
+        
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            color: #666;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #007AFF;
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+        }
+        
+        .login-button {
+            width: 100%;
+            background: linear-gradient(135deg, #007AFF, #0056CC);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 122, 255, 0.3);
+        }
+        
+        .login-button:active {
+            transform: translateY(0);
+        }
+        
+        .back-button {
+            width: 100%;
+            background: transparent;
+            color: #007AFF;
+            border: 2px solid #007AFF;
+            border-radius: 12px;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .back-button:hover {
+            background: #007AFF;
+            color: white;
+        }
+        
+        .server-info {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .server-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #28a745;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .demo-credentials {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .demo-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .demo-item {
+            margin-bottom: 5px;
+            color: #856404;
+        }
+        
+        .status-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 44px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="status-bar">
+        🔐 تسجيل الدخول - نظام إدارة الصيدلية
+    </div>
+    
+    <div class="login-container">
+        <div class="header">
+            <div class="logo">💊</div>
+            <div class="title">تسجيل الدخول</div>
+            <div class="subtitle">نظام إدارة الصيدلية</div>
+        </div>
+        
+        <div class="server-info">
+            <div class="server-status">
+                <span class="status-dot"></span>
+                متصل بخادم النظام: localhost:8080
+            </div>
+        </div>
+        
+        <div class="demo-credentials">
+            <div class="demo-title">بيانات تجريبية:</div>
+            <div class="demo-item">📧 admin@pharmacy-erp.com</div>
+            <div class="demo-item">🔑 password123</div>
+        </div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label class="form-label">البريد الإلكتروني</label>
+                <input type="email" class="form-input" id="email" value="admin@pharmacy-erp.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">كلمة المرور</label>
+                <input type="password" class="form-input" id="password" value="password123" required>
+            </div>
+            
+            <button type="submit" class="login-button">
+                🔐 تسجيل الدخول
+            </button>
+            
+            <button type="button" class="back-button" onclick="goBack()">
+                ← العودة للقائمة الرئيسية
+            </button>
+        </form>
+    </div>
+    
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // التحقق من البيانات
+            if (email === 'admin@pharmacy-erp.com' && password === 'password123') {
+                // محاكاة عملية تسجيل الدخول
+                const button = document.querySelector('.login-button');
+                button.innerHTML = '⏳ جاري تسجيل الدخول...';
+                button.disabled = true;
+                
+                setTimeout(() => {
+                    button.innerHTML = '✅ تم تسجيل الدخول بنجاح!';
+                    button.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
+                    
+                    setTimeout(() => {
+                        // إعادة التوجيه للوحة التحكم
+                        window.location.href = 'dashboard.html';
+                    }, 1500);
+                }, 2000);
+            } else {
+                alert('❌ خطأ في البريد الإلكتروني أو كلمة المرور\n\nاستخدم البيانات التجريبية:\nالبريد: admin@pharmacy-erp.com\nكلمة المرور: password123');
+            }
+        });
+        
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+        
+        // إضافة تأثيرات اللمس
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('touchstart', function() {
+                this.style.transform = 'scale(0.95)';
+            });
+            
+            button.addEventListener('touchend', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+        
+        // تحديث حالة الخادم
+        function checkServerStatus() {
+            fetch(window.location.origin + '/test.html')
+                .then(response => {
+                    if (response.ok) {
+                        document.querySelector('.server-status').innerHTML = `
+                            <span class="status-dot"></span>
+                            متصل بخادم النظام: localhost:8080 ✅
+                        `;
+                    }
+                })
+                .catch(error => {
+                    document.querySelector('.server-status').innerHTML = `
+                        <span class="status-dot" style="background: #dc3545;"></span>
+                        خطأ في الاتصال بالخادم ❌
+                    `;
+                });
+        }
+        
+        // فحص حالة الخادم عند التحميل
+        document.addEventListener('DOMContentLoaded', checkServerStatus);
+    </script>
+</body>
+</html>

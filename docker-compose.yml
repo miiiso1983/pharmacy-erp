@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  # تطبيق Laravel
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pharmacy-erp-app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+      - ./storage:/var/www/html/storage
+    ports:
+      - "8000:80"
+    environment:
+      - APP_NAME=نظام إدارة الصيدلية
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - APP_URL=http://localhost:8000
+      - DB_CONNECTION=mysql
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=pharmacy_erp
+      - DB_USERNAME=pharmacy_user
+      - DB_PASSWORD=pharmacy_password
+      - APP_LOCALE=ar
+      - APP_FALLBACK_LOCALE=en
+    depends_on:
+      - db
+    networks:
+      - pharmacy-network
+
+  # قاعدة بيانات MySQL
+  db:
+    image: mysql:8.0
+    container_name: pharmacy-erp-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: pharmacy_erp
+      MYSQL_USER: pharmacy_user
+      MYSQL_PASSWORD: pharmacy_password
+      MYSQL_ROOT_PASSWORD: root_password
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - pharmacy-network
+
+  # phpMyAdmin (اختياري)
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: pharmacy-erp-phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: pharmacy_user
+      PMA_PASSWORD: pharmacy_password
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    networks:
+      - pharmacy-network
+
+volumes:
+  db_data:
+
+networks:
+  pharmacy-network:
+    driver: bridge

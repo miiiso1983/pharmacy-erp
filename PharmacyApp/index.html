@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>نظام إدارة الصيدلية</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            direction: rtl;
+        }
+        .container {
+            max-width: 400px;
+            margin: 60px auto 0;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: #007AFF;
+            border-radius: 20px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .menu-item {
+            display: block;
+            width: 100%;
+            background: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+        }
+        .menu-item:hover {
+            transform: translateY(-2px);
+        }
+        .menu-item.warehouses {
+            background: linear-gradient(135deg, #34C759, #248A3D);
+        }
+        .menu-item.orders {
+            background: linear-gradient(135deg, #FF9500, #CC7700);
+        }
+        .menu-item.reports {
+            background: linear-gradient(135deg, #AF52DE, #8E44AD);
+        }
+        .menu-item.settings {
+            background: linear-gradient(135deg, #8E8E93, #6D6D70);
+        }
+        .status-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 44px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="status-bar">📱 محاكي iOS - نظام إدارة الصيدلية</div>
+
+    <div class="container">
+        <div class="logo">💊</div>
+        <div class="title">نظام إدارة الصيدلية</div>
+
+        <button class="menu-item" onclick="window.location.href='login.html'">
+            🔐 تسجيل الدخول
+        </button>
+
+        <button class="menu-item warehouses" onclick="window.location.href='warehouses.html'">
+            🏪 إدارة المخازن
+        </button>
+
+        <button class="menu-item orders" onclick="alert('الطلبات')">
+            🛒 الطلبات
+        </button>
+
+        <button class="menu-item reports" onclick="alert('التقارير')">
+            📊 التقارير
+        </button>
+
+        <button class="menu-item settings" onclick="alert('الإعدادات')">
+            ⚙️ الإعدادات
+        </button>
+    </div>
+</body>
+</html>

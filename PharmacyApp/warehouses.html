@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>إدارة المخازن - نظام الصيدلية</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            direction: rtl;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1a1a1a;
+        }
+        
+        .back-btn {
+            background: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .stat-icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .warehouses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .warehouse-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+        
+        .warehouse-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .warehouse-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .warehouse-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a1a1a;
+        }
+        
+        .warehouse-status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-active {
+            background: #e8f5e8;
+            color: #388e3c;
+        }
+        
+        .status-inactive {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+        
+        .warehouse-info {
+            margin-bottom: 15px;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .info-label {
+            color: #666;
+        }
+        
+        .info-value {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .currency {
+            color: #007AFF;
+            font-weight: bold;
+        }
+        
+        .warehouse-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .action-btn {
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #007AFF;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #1a1a1a;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .btn-success {
+            background: #34C759;
+            color: white;
+        }
+        
+        .btn-warning {
+            background: #FF9500;
+            color: white;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .quick-actions {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 15px;
+        }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        
+        .quick-action-btn {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .quick-action-btn:hover {
+            border-color: #007AFF;
+            background: #f0f8ff;
+            transform: translateY(-2px);
+        }
+        
+        .action-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a1a1a;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .form-input, .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #007AFF;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            background: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .submit-btn:hover {
+            background: #0056CC;
+        }
+        
+        @media (max-width: 768px) {
+            .warehouses-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .warehouse-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">🏪 إدارة المخازن</div>
+        <button class="back-btn" onclick="window.location.href='index.html'">← العودة</button>
+    </div>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">🏪</div>
+            <div class="stat-number">5</div>
+            <div class="stat-label">إجمالي المخازن</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">📦</div>
+            <div class="stat-number">2,847</div>
+            <div class="stat-label">إجمالي المنتجات</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">💰</div>
+            <div class="stat-number"><span class="currency">15,750,000 د.ع</span></div>
+            <div class="stat-label">قيمة المخزون الإجمالية</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">🔄</div>
+            <div class="stat-number">23</div>
+            <div class="stat-label">عمليات النقل اليوم</div>
+        </div>
+    </div>
+    
+    <div class="quick-actions">
+        <div class="section-title">الإجراءات السريعة</div>
+        <div class="actions-grid">
+            <button class="quick-action-btn" onclick="openModal('addWarehouse')">
+                <span class="action-icon">➕</span>
+                إضافة مخزن جديد
+            </button>
+            
+            <button class="quick-action-btn" onclick="openModal('transferItems')">
+                <span class="action-icon">🔄</span>
+                نقل بين المخازن
+            </button>
+            
+            <button class="quick-action-btn" onclick="openModal('inventoryReport')">
+                <span class="action-icon">📊</span>
+                تقرير المخزون
+            </button>
+            
+            <button class="quick-action-btn" onclick="openModal('lowStock')">
+                <span class="action-icon">⚠️</span>
+                تنبيهات النفاد
+            </button>
+        </div>
+    </div>
+    
+    <div class="warehouses-grid" id="warehousesGrid">
+        <!-- سيتم ملء المخازن بواسطة JavaScript -->
+    </div>
+    
+    <!-- Modal إضافة مخزن جديد -->
+    <div class="modal" id="addWarehouseModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">إضافة مخزن جديد</div>
+                <button class="close-btn" onclick="closeModal('addWarehouse')">&times;</button>
+            </div>
+            
+            <form id="addWarehouseForm">
+                <div class="form-group">
+                    <label class="form-label">اسم المخزن</label>
+                    <input type="text" class="form-input" id="warehouseName" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">المدينة</label>
+                        <input type="text" class="form-input" id="warehouseCity" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">المنطقة</label>
+                        <input type="text" class="form-input" id="warehouseArea" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">العنوان الكامل</label>
+                    <input type="text" class="form-input" id="warehouseAddress" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">رقم الهاتف</label>
+                        <input type="tel" class="form-input" id="warehousePhone">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">المدير المسؤول</label>
+                        <input type="text" class="form-input" id="warehouseManager">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">نوع المخزن</label>
+                    <select class="form-select" id="warehouseType" required>
+                        <option value="">اختر نوع المخزن</option>
+                        <option value="main">مخزن رئيسي</option>
+                        <option value="branch">مخزن فرعي</option>
+                        <option value="pharmacy">صيدلية</option>
+                        <option value="distribution">مركز توزيع</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="submit-btn">إضافة المخزن</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal نقل بين المخازن -->
+    <div class="modal" id="transferItemsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">نقل منتجات بين المخازن</div>
+                <button class="close-btn" onclick="closeModal('transferItems')">&times;</button>
+            </div>
+            
+            <form id="transferForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">من المخزن</label>
+                        <select class="form-select" id="fromWarehouse" required>
+                            <option value="">اختر المخزن المرسل</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">إلى المخزن</label>
+                        <select class="form-select" id="toWarehouse" required>
+                            <option value="">اختر المخزن المستقبل</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">المنتج</label>
+                    <select class="form-select" id="transferProduct" required>
+                        <option value="">اختر المنتج</option>
+                    </select>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">الكمية المتاحة</label>
+                        <input type="number" class="form-input" id="availableQuantity" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">الكمية المنقولة</label>
+                        <input type="number" class="form-input" id="transferQuantity" min="1" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">ملاحظات</label>
+                    <input type="text" class="form-input" id="transferNotes" placeholder="ملاحظات إضافية (اختياري)">
+                </div>
+                
+                <button type="submit" class="submit-btn">تنفيذ عملية النقل</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // بيانات المخازن التجريبية
+        const warehouses = [
+            {
+                id: 1,
+                name: "المخزن الرئيسي - بغداد",
+                city: "بغداد",
+                area: "الكرادة",
+                type: "main",
+                status: "active",
+                manager: "أحمد محمد",
+                phone: "07901234567",
+                products: 1247,
+                value: 8500000,
+                sales: 2300000
+            },
+            {
+                id: 2,
+                name: "صيدلية النور - البصرة",
+                city: "البصرة",
+                area: "العشار",
+                type: "pharmacy",
+                status: "active",
+                manager: "فاطمة علي",
+                phone: "07801234567",
+                products: 456,
+                value: 2100000,
+                sales: 850000
+            },
+            {
+                id: 3,
+                name: "مخزن الموصل الفرعي",
+                city: "الموصل",
+                area: "الجامعة",
+                type: "branch",
+                status: "active",
+                manager: "عمر حسن",
+                phone: "07701234567",
+                products: 789,
+                value: 3200000,
+                sales: 1200000
+            },
+            {
+                id: 4,
+                name: "مركز توزيع أربيل",
+                city: "أربيل",
+                area: "المركز",
+                type: "distribution",
+                status: "active",
+                manager: "سارة أحمد",
+                phone: "07501234567",
+                products: 234,
+                value: 1450000,
+                sales: 650000
+            },
+            {
+                id: 5,
+                name: "صيدلية الشفاء - كربلاء",
+                city: "كربلاء",
+                area: "الحسين",
+                type: "pharmacy",
+                status: "inactive",
+                manager: "محمد جعفر",
+                phone: "07601234567",
+                products: 121,
+                value: 500000,
+                sales: 180000
+            }
+        ];
+        
+        // عرض المخازن
+        function displayWarehouses() {
+            const grid = document.getElementById('warehousesGrid');
+            grid.innerHTML = '';
+            
+            warehouses.forEach(warehouse => {
+                const card = createWarehouseCard(warehouse);
+                grid.appendChild(card);
+            });
+        }
+        
+        function createWarehouseCard(warehouse) {
+            const card = document.createElement('div');
+            card.className = 'warehouse-card';
+            
+            const typeNames = {
+                'main': 'مخزن رئيسي',
+                'branch': 'مخزن فرعي',
+                'pharmacy': 'صيدلية',
+                'distribution': 'مركز توزيع'
+            };
+            
+            card.innerHTML = `
+                <div class="warehouse-header">
+                    <div class="warehouse-name">${warehouse.name}</div>
+                    <div class="warehouse-status ${warehouse.status === 'active' ? 'status-active' : 'status-inactive'}">
+                        ${warehouse.status === 'active' ? 'نشط' : 'غير نشط'}
+                    </div>
+                </div>
+                
+                <div class="warehouse-info">
+                    <div class="info-row">
+                        <span class="info-label">النوع:</span>
+                        <span class="info-value">${typeNames[warehouse.type]}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">الموقع:</span>
+                        <span class="info-value">${warehouse.city} - ${warehouse.area}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">المدير:</span>
+                        <span class="info-value">${warehouse.manager}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">المنتجات:</span>
+                        <span class="info-value">${warehouse.products.toLocaleString()}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">قيمة المخزون:</span>
+                        <span class="info-value currency">${warehouse.value.toLocaleString()} د.ع</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">المبيعات الشهرية:</span>
+                        <span class="info-value currency">${warehouse.sales.toLocaleString()} د.ع</span>
+                    </div>
+                </div>
+                
+                <div class="warehouse-actions">
+                    <button class="action-btn btn-primary" onclick="viewWarehouse(${warehouse.id})">
+                        📋 عرض التفاصيل
+                    </button>
+                    <button class="action-btn btn-success" onclick="warehouseSales(${warehouse.id})">
+                        💰 المبيعات
+                    </button>
+                    <button class="action-btn btn-warning" onclick="transferFrom(${warehouse.id})">
+                        🔄 نقل منتجات
+                    </button>
+                    <button class="action-btn btn-secondary" onclick="editWarehouse(${warehouse.id})">
+                        ✏️ تعديل
+                    </button>
+                </div>
+            `;
+            
+            return card;
+        }
+        
+        // فتح وإغلاق النوافذ المنبثقة
+        function openModal(modalType) {
+            const modal = document.getElementById(modalType + 'Modal');
+            if (modal) {
+                modal.style.display = 'flex';
+                
+                if (modalType === 'transferItems') {
+                    populateWarehouseSelects();
+                }
+            }
+        }
+        
+        function closeModal(modalType) {
+            const modal = document.getElementById(modalType + 'Modal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+        
+        // ملء قوائم المخازن في نموذج النقل
+        function populateWarehouseSelects() {
+            const fromSelect = document.getElementById('fromWarehouse');
+            const toSelect = document.getElementById('toWarehouse');
+            
+            fromSelect.innerHTML = '<option value="">اختر المخزن المرسل</option>';
+            toSelect.innerHTML = '<option value="">اختر المخزن المستقبل</option>';
+            
+            warehouses.filter(w => w.status === 'active').forEach(warehouse => {
+                const option1 = new Option(warehouse.name, warehouse.id);
+                const option2 = new Option(warehouse.name, warehouse.id);
+                fromSelect.appendChild(option1);
+                toSelect.appendChild(option2);
+            });
+        }
+        
+        // وظائف المخازن
+        function viewWarehouse(id) {
+            const warehouse = warehouses.find(w => w.id === id);
+            window.location.href = `warehouse-details.html?id=${id}&name=${encodeURIComponent(warehouse.name)}`;
+        }
+        
+        function warehouseSales(id) {
+            const warehouse = warehouses.find(w => w.id === id);
+            window.location.href = `warehouse-sales.html?id=${id}&name=${encodeURIComponent(warehouse.name)}`;
+        }
+        
+        function transferFrom(id) {
+            openModal('transferItems');
+            document.getElementById('fromWarehouse').value = id;
+        }
+        
+        function editWarehouse(id) {
+            const warehouse = warehouses.find(w => w.id === id);
+            alert(`تعديل ${warehouse.name}\n\nسيتم فتح نموذج التعديل`);
+        }
+        
+        // معالجة النماذج
+        document.getElementById('addWarehouseForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const warehouseData = {
+                name: document.getElementById('warehouseName').value,
+                city: document.getElementById('warehouseCity').value,
+                area: document.getElementById('warehouseArea').value,
+                address: document.getElementById('warehouseAddress').value,
+                phone: document.getElementById('warehousePhone').value,
+                manager: document.getElementById('warehouseManager').value,
+                type: document.getElementById('warehouseType').value
+            };
+            
+            alert(`تم إضافة المخزن بنجاح!\n\nاسم المخزن: ${warehouseData.name}\nالموقع: ${warehouseData.city} - ${warehouseData.area}`);
+            closeModal('addWarehouse');
+            e.target.reset();
+        });
+        
+        document.getElementById('transferForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fromWarehouse = document.getElementById('fromWarehouse').value;
+            const toWarehouse = document.getElementById('toWarehouse').value;
+            const quantity = document.getElementById('transferQuantity').value;
+            
+            if (fromWarehouse === toWarehouse) {
+                alert('لا يمكن النقل من وإلى نفس المخزن!');
+                return;
+            }
+            
+            alert(`تم تنفيذ عملية النقل بنجاح!\n\nالكمية: ${quantity}\nمن: ${warehouses.find(w => w.id == fromWarehouse).name}\nإلى: ${warehouses.find(w => w.id == toWarehouse).name}`);
+            closeModal('transferItems');
+            e.target.reset();
+        });
+        
+        // تحميل البيانات عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            displayWarehouses();
+        });
+        
+        // إغلاق النوافذ المنبثقة عند النقر خارجها
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>تقارير المخازن - نظام الصيدلية</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            direction: rtl;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1a1a1a;
+        }
+        
+        .back-btn {
+            background: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .report-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+        
+        .report-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .report-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .report-icon {
+            font-size: 30px;
+            margin-left: 15px;
+        }
+        
+        .report-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a1a1a;
+        }
+        
+        .report-description {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .report-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .stat-number {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .currency {
+            color: #007AFF;
+        }
+        
+        .report-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .action-btn {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #007AFF;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #1a1a1a;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .comparison-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 15px;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            text-align: right;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .comparison-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .comparison-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .performance-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .indicator-excellent {
+            background: #e8f5e8;
+            color: #388e3c;
+        }
+        
+        .indicator-good {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .indicator-average {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+        
+        .indicator-poor {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+        
+        .filter-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .filter-label {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+        
+        .filter-input, .filter-select {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .filter-input:focus, .filter-select:focus {
+            outline: none;
+            border-color: #007AFF;
+        }
+        
+        .generate-btn {
+            background: #34C759;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin-top: 15px;
+        }
+        
+        .generate-btn:hover {
+            background: #28a745;
+        }
+        
+        @media (max-width: 768px) {
+            .reports-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .report-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .report-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-table {
+                font-size: 14px;
+            }
+            
+            .comparison-table th,
+            .comparison-table td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">📊 تقارير المخازن</div>
+        <button class="back-btn" onclick="window.location.href='warehouses.html'">← العودة للمخازن</button>
+    </div>
+    
+    <div class="filter-section">
+        <div class="section-title">فلاتر التقارير</div>
+        <div class="filter-grid">
+            <div class="filter-group">
+                <label class="filter-label">الفترة الزمنية</label>
+                <select class="filter-select" id="periodFilter">
+                    <option value="today">اليوم</option>
+                    <option value="week">هذا الأسبوع</option>
+                    <option value="month" selected>هذا الشهر</option>
+                    <option value="quarter">هذا الربع</option>
+                    <option value="year">هذا العام</option>
+                    <option value="custom">فترة مخصصة</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">من تاريخ</label>
+                <input type="date" class="filter-input" id="fromDate">
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">إلى تاريخ</label>
+                <input type="date" class="filter-input" id="toDate">
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">المخزن</label>
+                <select class="filter-select" id="warehouseFilter">
+                    <option value="all">جميع المخازن</option>
+                    <option value="1">المخزن الرئيسي - بغداد</option>
+                    <option value="2">صيدلية النور - البصرة</option>
+                    <option value="3">مخزن الموصل الفرعي</option>
+                    <option value="4">مركز توزيع أربيل</option>
+                    <option value="5">صيدلية الشفاء - كربلاء</option>
+                </select>
+            </div>
+        </div>
+        
+        <button class="generate-btn" onclick="generateReports()">🔄 تحديث التقارير</button>
+    </div>
+    
+    <div class="reports-grid">
+        <div class="report-card">
+            <div class="report-header">
+                <div class="report-icon">📈</div>
+                <div class="report-title">تقرير المبيعات</div>
+            </div>
+            <div class="report-description">
+                تحليل شامل لمبيعات جميع المخازن مع مقارنة الأداء والاتجاهات
+            </div>
+            <div class="report-stats">
+                <div class="stat-item">
+                    <div class="stat-number currency">25,750,000 د.ع</div>
+                    <div class="stat-label">إجمالي المبيعات</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">1,247</div>
+                    <div class="stat-label">عدد المعاملات</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number currency">20,650 د.ع</div>
+                    <div class="stat-label">متوسط المعاملة</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">+15.3%</div>
+                    <div class="stat-label">نمو مقارنة بالشهر السابق</div>
+                </div>
+            </div>
+            <div class="report-actions">
+                <button class="action-btn btn-primary" onclick="viewSalesReport()">عرض التقرير</button>
+                <button class="action-btn btn-secondary" onclick="exportReport('sales')">تصدير PDF</button>
+            </div>
+        </div>
+        
+        <div class="report-card">
+            <div class="report-header">
+                <div class="report-icon">📦</div>
+                <div class="report-title">تقرير المخزون</div>
+            </div>
+            <div class="report-description">
+                حالة المخزون الحالية مع تنبيهات النفاد والمنتجات بطيئة الحركة
+            </div>
+            <div class="report-stats">
+                <div class="stat-item">
+                    <div class="stat-number">2,847</div>
+                    <div class="stat-label">إجمالي المنتجات</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number currency">15,750,000 د.ع</div>
+                    <div class="stat-label">قيمة المخزون</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" style="color: #f57c00;">47</div>
+                    <div class="stat-label">مخزون منخفض</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" style="color: #d32f2f;">12</div>
+                    <div class="stat-label">نفد المخزون</div>
+                </div>
+            </div>
+            <div class="report-actions">
+                <button class="action-btn btn-primary" onclick="viewInventoryReport()">عرض التقرير</button>
+                <button class="action-btn btn-secondary" onclick="exportReport('inventory')">تصدير Excel</button>
+            </div>
+        </div>
+        
+        <div class="report-card">
+            <div class="report-header">
+                <div class="report-icon">🔄</div>
+                <div class="report-title">تقرير النقل</div>
+            </div>
+            <div class="report-description">
+                عمليات النقل بين المخازن مع تتبع الحركة والكفاءة
+            </div>
+            <div class="report-stats">
+                <div class="stat-item">
+                    <div class="stat-number">156</div>
+                    <div class="stat-label">عمليات النقل</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3,247</div>
+                    <div class="stat-label">المنتجات المنقولة</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2.3 يوم</div>
+                    <div class="stat-label">متوسط وقت النقل</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">98.5%</div>
+                    <div class="stat-label">معدل النجاح</div>
+                </div>
+            </div>
+            <div class="report-actions">
+                <button class="action-btn btn-primary" onclick="viewTransferReport()">عرض التقرير</button>
+                <button class="action-btn btn-secondary" onclick="exportReport('transfer')">تصدير PDF</button>
+            </div>
+        </div>
+        
+        <div class="report-card">
+            <div class="report-header">
+                <div class="report-icon">💰</div>
+                <div class="report-title">تقرير الربحية</div>
+            </div>
+            <div class="report-description">
+                تحليل الربحية لكل مخزن ومنتج مع مقارنة الأداء المالي
+            </div>
+            <div class="report-stats">
+                <div class="stat-item">
+                    <div class="stat-number currency">3,875,000 د.ع</div>
+                    <div class="stat-label">إجمالي الربح</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">15.05%</div>
+                    <div class="stat-label">هامش الربح</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number currency">125,484 د.ع</div>
+                    <div class="stat-label">متوسط الربح اليومي</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">+8.7%</div>
+                    <div class="stat-label">نمو الربحية</div>
+                </div>
+            </div>
+            <div class="report-actions">
+                <button class="action-btn btn-primary" onclick="viewProfitReport()">عرض التقرير</button>
+                <button class="action-btn btn-secondary" onclick="exportReport('profit')">تصدير Excel</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="comparison-section">
+        <div class="section-title">مقارنة أداء المخازن</div>
+        
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>المخزن</th>
+                    <th>المبيعات الشهرية</th>
+                    <th>عدد المنتجات</th>
+                    <th>معدل الدوران</th>
+                    <th>الربحية</th>
+                    <th>التقييم</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>المخزن الرئيسي - بغداد</td>
+                    <td class="currency">15,750,000 د.ع</td>
+                    <td>1,247</td>
+                    <td>4.2x</td>
+                    <td>18.5%</td>
+                    <td><span class="performance-indicator indicator-excellent">ممتاز 🌟</span></td>
+                </tr>
+                <tr>
+                    <td>صيدلية النور - البصرة</td>
+                    <td class="currency">8,500,000 د.ع</td>
+                    <td>456</td>
+                    <td>3.8x</td>
+                    <td>15.2%</td>
+                    <td><span class="performance-indicator indicator-good">جيد 👍</span></td>
+                </tr>
+                <tr>
+                    <td>مخزن الموصل الفرعي</td>
+                    <td class="currency">6,200,000 د.ع</td>
+                    <td>789</td>
+                    <td>2.9x</td>
+                    <td>12.8%</td>
+                    <td><span class="performance-indicator indicator-average">متوسط ⚡</span></td>
+                </tr>
+                <tr>
+                    <td>مركز توزيع أربيل</td>
+                    <td class="currency">4,100,000 د.ع</td>
+                    <td>234</td>
+                    <td>5.1x</td>
+                    <td>16.7%</td>
+                    <td><span class="performance-indicator indicator-good">جيد 👍</span></td>
+                </tr>
+                <tr>
+                    <td>صيدلية الشفاء - كربلاء</td>
+                    <td class="currency">1,800,000 د.ع</td>
+                    <td>121</td>
+                    <td>1.8x</td>
+                    <td>8.3%</td>
+                    <td><span class="performance-indicator indicator-poor">ضعيف ⚠️</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <script>
+        // تحديث التقارير
+        function generateReports() {
+            const period = document.getElementById('periodFilter').value;
+            const warehouse = document.getElementById('warehouseFilter').value;
+            
+            alert(`تم تحديث التقارير!\n\nالفترة: ${period}\nالمخزن: ${warehouse === 'all' ? 'جميع المخازن' : 'مخزن محدد'}\n\nسيتم إعادة تحميل البيانات...`);
+        }
+        
+        // عرض التقارير
+        function viewSalesReport() {
+            alert('عرض تقرير المبيعات التفصيلي\n\nسيتم فتح صفحة التقرير مع:\n- رسوم بيانية تفاعلية\n- تحليل الاتجاهات\n- مقارنة الفترات\n- تفاصيل المنتجات');
+        }
+        
+        function viewInventoryReport() {
+            alert('عرض تقرير المخزون التفصيلي\n\nسيتم فتح صفحة التقرير مع:\n- حالة المخزون الحالية\n- تنبيهات النفاد\n- المنتجات بطيئة الحركة\n- توقعات الطلب');
+        }
+        
+        function viewTransferReport() {
+            alert('عرض تقرير النقل التفصيلي\n\nسيتم فتح صفحة التقرير مع:\n- سجل عمليات النقل\n- كفاءة النقل\n- أوقات التسليم\n- تكاليف النقل');
+        }
+        
+        function viewProfitReport() {
+            alert('عرض تقرير الربحية التفصيلي\n\nسيتم فتح صفحة التقرير مع:\n- تحليل الربحية\n- هوامش الربح\n- أكثر المنتجات ربحية\n- اتجاهات الربحية');
+        }
+        
+        // تصدير التقارير
+        function exportReport(type) {
+            const reportNames = {
+                'sales': 'تقرير المبيعات',
+                'inventory': 'تقرير المخزون',
+                'transfer': 'تقرير النقل',
+                'profit': 'تقرير الربحية'
+            };
+            
+            alert(`تصدير ${reportNames[type]}\n\nسيتم تحميل الملف خلال ثوانٍ...\n\nالملف سيحتوي على:\n- البيانات التفصيلية\n- الرسوم البيانية\n- التحليلات\n- التوصيات`);
+        }
+        
+        // تحديث التواريخ عند تغيير الفترة
+        document.getElementById('periodFilter').addEventListener('change', function() {
+            const period = this.value;
+            const today = new Date();
+            const fromDate = document.getElementById('fromDate');
+            const toDate = document.getElementById('toDate');
+            
+            toDate.value = today.toISOString().split('T')[0];
+            
+            switch(period) {
+                case 'today':
+                    fromDate.value = today.toISOString().split('T')[0];
+                    break;
+                case 'week':
+                    const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+                    fromDate.value = weekAgo.toISOString().split('T')[0];
+                    break;
+                case 'month':
+                    const monthAgo = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+                    fromDate.value = monthAgo.toISOString().split('T')[0];
+                    break;
+                case 'quarter':
+                    const quarterAgo = new Date(today.getFullYear(), today.getMonth() - 3, today.getDate());
+                    fromDate.value = quarterAgo.toISOString().split('T')[0];
+                    break;
+                case 'year':
+                    const yearAgo = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
+                    fromDate.value = yearAgo.toISOString().split('T')[0];
+                    break;
+            }
+        });
+        
+        // تحميل التواريخ الافتراضية
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('periodFilter').dispatchEvent(new Event('change'));
+        });
+    </script>
+</body>
+</html>

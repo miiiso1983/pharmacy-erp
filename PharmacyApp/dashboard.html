@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>لوحة التحكم - نظام الصيدلية</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            direction: rtl;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .welcome-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1a1a1a;
+        }
+        
+        .user-info {
+            font-size: 16px;
+            color: #666;
+        }
+        
+        .logout-btn {
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .currency {
+            color: #007AFF;
+            font-weight: bold;
+        }
+        
+        .quick-actions {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 15px;
+        }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+        }
+        
+        .action-button {
+            background: white;
+            border: none;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+            text-decoration: none;
+            display: block;
+        }
+        
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .action-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .recent-activity {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 15px;
+            font-size: 18px;
+        }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-title {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 2px;
+        }
+        
+        .activity-time {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-around;
+        }
+        
+        .nav-item {
+            background: none;
+            border: none;
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            text-decoration: none;
+        }
+        
+        .nav-item.active {
+            background: #007AFF;
+            color: white;
+        }
+        
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 5px;
+            display: block;
+        }
+        
+        .status-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 44px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 1000;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .actions-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="status-bar">
+        📱 لوحة التحكم - نظام إدارة الصيدلية
+    </div>
+    
+    <div class="header" style="margin-top: 60px;">
+        <div class="header-top">
+            <div>
+                <div class="welcome-text">مرحباً بك، المدير</div>
+                <div class="user-info">admin@pharmacy-erp.com</div>
+            </div>
+            <button class="logout-btn" onclick="logout()">🚪 خروج</button>
+        </div>
+    </div>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">💰</div>
+            <div class="stat-number"><span class="currency">2,500,000 د.ع</span></div>
+            <div class="stat-label">إجمالي المبيعات اليوم</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">🏪</div>
+            <div class="stat-number">5</div>
+            <div class="stat-label">المخازن النشطة</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">📦</div>
+            <div class="stat-number">2,847</div>
+            <div class="stat-label">إجمالي المنتجات</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">🛒</div>
+            <div class="stat-number">156</div>
+            <div class="stat-label">الطلبات الجديدة</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">⚠️</div>
+            <div class="stat-number">23</div>
+            <div class="stat-label">منتجات قاربت النفاد</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">🔄</div>
+            <div class="stat-number">12</div>
+            <div class="stat-label">عمليات النقل اليوم</div>
+        </div>
+    </div>
+    
+    <div class="quick-actions">
+        <div class="section-title">الإجراءات السريعة</div>
+        <div class="actions-grid">
+            <a href="warehouses.html" class="action-button">
+                <span class="action-icon">🏪</span>
+                إدارة المخازن
+            </a>
+            
+            <a href="warehouse-sales.html?id=1&name=المخزن الرئيسي" class="action-button">
+                <span class="action-icon">💰</span>
+                بيع جديد
+            </a>
+            
+            <a href="warehouse-reports.html" class="action-button">
+                <span class="action-icon">📊</span>
+                التقارير
+            </a>
+            
+            <button class="action-button" onclick="addProduct()">
+                <span class="action-icon">📦</span>
+                إضافة منتج
+            </button>
+            
+            <button class="action-button" onclick="transferItems()">
+                <span class="action-icon">🔄</span>
+                نقل منتجات
+            </button>
+            
+            <button class="action-button" onclick="viewCustomers()">
+                <span class="action-icon">👥</span>
+                العملاء
+            </button>
+        </div>
+    </div>
+    
+    <div class="recent-activity">
+        <div class="section-title">النشاط الأخير</div>
+        
+        <div class="activity-item">
+            <div class="activity-icon" style="background: #e3f2fd; color: #1976d2;">💊</div>
+            <div class="activity-content">
+                <div class="activity-title">بيع دواء باراسيتامول - المخزن الرئيسي</div>
+                <div class="activity-time">منذ 5 دقائق - <span class="currency">15,000 د.ع</span></div>
+            </div>
+        </div>
+        
+        <div class="activity-item">
+            <div class="activity-icon" style="background: #f3e5f5; color: #7b1fa2;">🔄</div>
+            <div class="activity-content">
+                <div class="activity-title">نقل أسبرين من بغداد إلى البصرة</div>
+                <div class="activity-time">منذ 15 دقيقة - 50 وحدة</div>
+            </div>
+        </div>
+        
+        <div class="activity-item">
+            <div class="activity-icon" style="background: #e8f5e8; color: #388e3c;">📦</div>
+            <div class="activity-content">
+                <div class="activity-title">إضافة منتج جديد - فيتامين د</div>
+                <div class="activity-time">منذ 30 دقيقة - صيدلية النور</div>
+            </div>
+        </div>
+        
+        <div class="activity-item">
+            <div class="activity-icon" style="background: #fff3e0; color: #f57c00;">⚠️</div>
+            <div class="activity-content">
+                <div class="activity-title">تنبيه: مضاد حيوي قارب النفاد</div>
+                <div class="activity-time">منذ ساعة - مخزن الموصل</div>
+            </div>
+        </div>
+        
+        <div class="activity-item">
+            <div class="activity-icon" style="background: #e3f2fd; color: #1976d2;">👥</div>
+            <div class="activity-content">
+                <div class="activity-title">عميل جديد - أحمد محمد</div>
+                <div class="activity-time">منذ ساعتين - صيدلية كربلاء</div>
+            </div>
+        </div>
+    </div>
+    
+    <div style="height: 100px;"></div>
+    
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-item active">
+            <span class="nav-icon">🏠</span>
+            الرئيسية
+        </a>
+        
+        <a href="warehouses.html" class="nav-item">
+            <span class="nav-icon">🏪</span>
+            المخازن
+        </a>
+        
+        <a href="warehouse-sales.html?id=1" class="nav-item">
+            <span class="nav-icon">💰</span>
+            المبيعات
+        </a>
+        
+        <a href="warehouse-reports.html" class="nav-item">
+            <span class="nav-icon">📊</span>
+            التقارير
+        </a>
+        
+        <button class="nav-item" onclick="logout()">
+            <span class="nav-icon">🚪</span>
+            خروج
+        </button>
+    </div>
+    
+    <script>
+        // وظائف الإجراءات السريعة
+        function addProduct() {
+            alert('إضافة منتج جديد\n\nسيتم فتح نموذج إضافة منتج جديد للمخزن المحدد');
+        }
+        
+        function transferItems() {
+            window.location.href = 'warehouses.html';
+        }
+        
+        function viewCustomers() {
+            alert('إدارة العملاء\n\nسيتم فتح صفحة إدارة العملاء مع:\n- قائمة العملاء\n- إضافة عميل جديد\n- تاريخ المشتريات\n- معلومات الاتصال');
+        }
+        
+        function logout() {
+            if (confirm('هل تريد تسجيل الخروج؟')) {
+                window.location.href = 'index.html';
+            }
+        }
+        
+        // تحديث الإحصائيات كل 30 ثانية
+        setInterval(() => {
+            const salesElement = document.querySelector('.stat-number .currency');
+            if (salesElement) {
+                const currentValue = parseInt(salesElement.textContent.replace(/[^\d]/g, ''));
+                const newValue = currentValue + Math.floor(Math.random() * 50000);
+                salesElement.textContent = newValue.toLocaleString() + ' د.ع';
+            }
+        }, 30000);
+        
+        // إضافة تأثيرات اللمس
+        document.querySelectorAll('.action-button, .nav-item').forEach(item => {
+            item.addEventListener('touchstart', function() {
+                this.style.transform = 'scale(0.95)';
+            });
+            
+            item.addEventListener('touchend', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+        
+        // رسالة ترحيب عند التحميل
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎉 مرحباً بك في لوحة تحكم نظام إدارة الصيدلية');
+            console.log('📊 جميع الإحصائيات محدثة');
+            console.log('🏪 5 مخازن نشطة');
+            console.log('💰 العملة: الدينار العراقي');
+        });
+    </script>
+</body>
+</html>

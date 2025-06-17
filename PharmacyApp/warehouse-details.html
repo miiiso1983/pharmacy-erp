@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>تفاصيل المخزن - نظام الصيدلية</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            direction: rtl;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .header-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1a1a1a;
+        }
+        
+        .back-btn {
+            background: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .warehouse-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .summary-item {
+            text-align: center;
+        }
+        
+        .summary-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .summary-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1a1a1a;
+        }
+        
+        .currency {
+            color: #007AFF;
+        }
+        
+        .tabs {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 15px;
+        }
+        
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-btn.active {
+            background: #007AFF;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .product-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1a1a1a;
+        }
+        
+        .stock-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .stock-high {
+            background: #e8f5e8;
+            color: #388e3c;
+        }
+        
+        .stock-medium {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+        
+        .stock-low {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+        
+        .product-info {
+            margin-bottom: 15px;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .info-label {
+            color: #666;
+        }
+        
+        .info-value {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .product-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            padding: 8px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #007AFF;
+            color: white;
+        }
+        
+        .btn-success {
+            background: #34C759;
+            color: white;
+        }
+        
+        .btn-warning {
+            background: #FF9500;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #1a1a1a;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .transactions-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .transactions-table th,
+        .transactions-table td {
+            padding: 12px;
+            text-align: right;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .transactions-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .transactions-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .transaction-type {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .type-in {
+            background: #e8f5e8;
+            color: #388e3c;
+        }
+        
+        .type-out {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+        
+        .type-transfer {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .type-sale {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+        
+        .search-filter {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .filter-select {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            min-width: 150px;
+        }
+        
+        .add-product-btn {
+            background: #34C759;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: background 0.3s ease;
+        }
+        
+        .add-product-btn:hover {
+            background: #28a745;
+        }
+        
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .product-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-filter {
+                flex-direction: column;
+            }
+            
+            .transactions-table {
+                font-size: 14px;
+            }
+            
+            .transactions-table th,
+            .transactions-table td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-top">
+            <div class="header-title" id="warehouseTitle">📋 تفاصيل المخزن</div>
+            <button class="back-btn" onclick="window.location.href='warehouses.html'">← العودة للمخازن</button>
+        </div>
+        
+        <div class="warehouse-summary" id="warehouseSummary">
+            <!-- سيتم ملؤها بواسطة JavaScript -->
+        </div>
+    </div>
+    
+    <div class="tabs">
+        <div class="tab-buttons">
+            <button class="tab-btn active" onclick="switchTab('products')">📦 المنتجات</button>
+            <button class="tab-btn" onclick="switchTab('transactions')">📊 المعاملات</button>
+            <button class="tab-btn" onclick="switchTab('analytics')">📈 التحليلات</button>
+        </div>
+        
+        <!-- تبويب المنتجات -->
+        <div class="tab-content active" id="products-tab">
+            <div class="search-filter">
+                <input type="text" class="search-input" placeholder="البحث في المنتجات..." id="productSearch">
+                <select class="filter-select" id="categoryFilter">
+                    <option value="">جميع الفئات</option>
+                    <option value="medicine">أدوية</option>
+                    <option value="vitamins">فيتامينات</option>
+                    <option value="cosmetics">مستحضرات تجميل</option>
+                    <option value="medical">مستلزمات طبية</option>
+                </select>
+                <select class="filter-select" id="stockFilter">
+                    <option value="">جميع المستويات</option>
+                    <option value="high">مخزون عالي</option>
+                    <option value="medium">مخزون متوسط</option>
+                    <option value="low">مخزون منخفض</option>
+                </select>
+            </div>
+            
+            <button class="add-product-btn" onclick="addProduct()">➕ إضافة منتج جديد</button>
+            
+            <div class="products-grid" id="productsGrid">
+                <!-- سيتم ملؤها بواسطة JavaScript -->
+            </div>
+        </div>
+        
+        <!-- تبويب المعاملات -->
+        <div class="tab-content" id="transactions-tab">
+            <div class="search-filter">
+                <input type="text" class="search-input" placeholder="البحث في المعاملات..." id="transactionSearch">
+                <select class="filter-select" id="transactionTypeFilter">
+                    <option value="">جميع الأنواع</option>
+                    <option value="in">وارد</option>
+                    <option value="out">صادر</option>
+                    <option value="transfer">نقل</option>
+                    <option value="sale">بيع</option>
+                </select>
+                <input type="date" class="filter-select" id="dateFilter">
+            </div>
+            
+            <table class="transactions-table">
+                <thead>
+                    <tr>
+                        <th>التاريخ</th>
+                        <th>النوع</th>
+                        <th>المنتج</th>
+                        <th>الكمية</th>
+                        <th>المرجع</th>
+                        <th>الملاحظات</th>
+                    </tr>
+                </thead>
+                <tbody id="transactionsBody">
+                    <!-- سيتم ملؤها بواسطة JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- تبويب التحليلات -->
+        <div class="tab-content" id="analytics-tab">
+            <div style="text-align: center; padding: 50px; color: #666;">
+                <h3>📈 تحليلات المخزن</h3>
+                <p>سيتم إضافة الرسوم البيانية والتحليلات هنا</p>
+                <ul style="list-style: none; margin-top: 20px;">
+                    <li>• أكثر المنتجات مبيعاً</li>
+                    <li>• اتجاهات المخزون</li>
+                    <li>• تحليل الربحية</li>
+                    <li>• توقعات النفاد</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // الحصول على معرف المخزن من URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const warehouseId = urlParams.get('id');
+        const warehouseName = decodeURIComponent(urlParams.get('name') || 'مخزن غير محدد');
+        
+        // بيانات المخزن التجريبية
+        const warehouseData = {
+            1: {
+                name: "المخزن الرئيسي - بغداد",
+                manager: "أحمد محمد",
+                phone: "07901234567",
+                products: 1247,
+                totalValue: 8500000,
+                lowStock: 23,
+                outOfStock: 5
+            }
+        };
+        
+        // بيانات المنتجات التجريبية
+        const products = [
+            {
+                id: 1,
+                name: "باراسيتامول 500mg",
+                category: "medicine",
+                stock: 150,
+                minStock: 50,
+                price: 15000,
+                cost: 12000,
+                expiry: "2025-12-31",
+                supplier: "شركة الأدوية العراقية"
+            },
+            {
+                id: 2,
+                name: "أسبرين 100mg",
+                category: "medicine",
+                stock: 25,
+                minStock: 30,
+                price: 8000,
+                cost: 6000,
+                expiry: "2025-08-15",
+                supplier: "مختبرات بغداد"
+            },
+            {
+                id: 3,
+                name: "فيتامين د 1000 وحدة",
+                category: "vitamins",
+                stock: 80,
+                minStock: 20,
+                price: 12000,
+                cost: 9000,
+                expiry: "2026-03-20",
+                supplier: "شركة الفيتامينات المتحدة"
+            },
+            {
+                id: 4,
+                name: "مضاد حيوي أموكسيسيلين",
+                category: "medicine",
+                stock: 5,
+                minStock: 15,
+                price: 25000,
+                cost: 20000,
+                expiry: "2025-06-30",
+                supplier: "مختبرات الشرق الأوسط"
+            }
+        ];
+        
+        // بيانات المعاملات التجريبية
+        const transactions = [
+            {
+                date: "2024-06-16",
+                type: "sale",
+                product: "باراسيتامول 500mg",
+                quantity: -5,
+                reference: "بيع #2024001",
+                notes: "بيع للعميل أحمد محمد"
+            },
+            {
+                date: "2024-06-16",
+                type: "in",
+                product: "فيتامين د 1000 وحدة",
+                quantity: 50,
+                reference: "شراء #PO2024015",
+                notes: "وصول شحنة جديدة"
+            },
+            {
+                date: "2024-06-15",
+                type: "transfer",
+                product: "أسبرين 100mg",
+                quantity: -10,
+                reference: "نقل #T2024008",
+                notes: "نقل إلى صيدلية النور"
+            },
+            {
+                date: "2024-06-15",
+                type: "out",
+                product: "مضاد حيوي أموكسيسيلين",
+                quantity: -2,
+                reference: "تلف #D2024003",
+                notes: "منتهي الصلاحية"
+            }
+        ];
+        
+        // تحديث معلومات المخزن
+        function updateWarehouseInfo() {
+            document.getElementById('warehouseTitle').textContent = `📋 ${warehouseName}`;
+            
+            const warehouse = warehouseData[warehouseId] || warehouseData[1];
+            
+            document.getElementById('warehouseSummary').innerHTML = `
+                <div class="summary-item">
+                    <div class="summary-label">المدير المسؤول</div>
+                    <div class="summary-value">${warehouse.manager}</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">عدد المنتجات</div>
+                    <div class="summary-value">${warehouse.products.toLocaleString()}</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">قيمة المخزون</div>
+                    <div class="summary-value currency">${warehouse.totalValue.toLocaleString()} د.ع</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">مخزون منخفض</div>
+                    <div class="summary-value" style="color: #f57c00;">${warehouse.lowStock}</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">نفد المخزون</div>
+                    <div class="summary-value" style="color: #d32f2f;">${warehouse.outOfStock}</div>
+                </div>
+            `;
+        }
+        
+        // عرض المنتجات
+        function displayProducts() {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = '';
+            
+            products.forEach(product => {
+                const card = createProductCard(product);
+                grid.appendChild(card);
+            });
+        }
+        
+        function createProductCard(product) {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            
+            let stockLevel = 'high';
+            let stockText = 'مخزون جيد';
+            
+            if (product.stock <= 0) {
+                stockLevel = 'low';
+                stockText = 'نفد المخزون';
+            } else if (product.stock <= product.minStock) {
+                stockLevel = 'low';
+                stockText = 'مخزون منخفض';
+            } else if (product.stock <= product.minStock * 2) {
+                stockLevel = 'medium';
+                stockText = 'مخزون متوسط';
+            }
+            
+            card.innerHTML = `
+                <div class="product-header">
+                    <div class="product-name">${product.name}</div>
+                    <div class="stock-badge stock-${stockLevel}">${stockText}</div>
+                </div>
+                
+                <div class="product-info">
+                    <div class="info-row">
+                        <span class="info-label">الكمية المتاحة:</span>
+                        <span class="info-value">${product.stock}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">الحد الأدنى:</span>
+                        <span class="info-value">${product.minStock}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">سعر البيع:</span>
+                        <span class="info-value currency">${product.price.toLocaleString()} د.ع</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">تاريخ الانتهاء:</span>
+                        <span class="info-value">${product.expiry}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">المورد:</span>
+                        <span class="info-value">${product.supplier}</span>
+                    </div>
+                </div>
+                
+                <div class="product-actions">
+                    <button class="action-btn btn-primary" onclick="editProduct(${product.id})">
+                        ✏️ تعديل
+                    </button>
+                    <button class="action-btn btn-success" onclick="addStock(${product.id})">
+                        ➕ إضافة مخزون
+                    </button>
+                    <button class="action-btn btn-warning" onclick="transferProduct(${product.id})">
+                        🔄 نقل
+                    </button>
+                    <button class="action-btn btn-secondary" onclick="viewHistory(${product.id})">
+                        📊 التاريخ
+                    </button>
+                </div>
+            `;
+            
+            return card;
+        }
+        
+        // عرض المعاملات
+        function displayTransactions() {
+            const tbody = document.getElementById('transactionsBody');
+            tbody.innerHTML = '';
+            
+            transactions.forEach(transaction => {
+                const row = document.createElement('tr');
+                
+                const typeClass = `type-${transaction.type}`;
+                const typeText = {
+                    'in': 'وارد',
+                    'out': 'صادر',
+                    'transfer': 'نقل',
+                    'sale': 'بيع'
+                }[transaction.type];
+                
+                row.innerHTML = `
+                    <td>${transaction.date}</td>
+                    <td><span class="transaction-type ${typeClass}">${typeText}</span></td>
+                    <td>${transaction.product}</td>
+                    <td>${transaction.quantity > 0 ? '+' : ''}${transaction.quantity}</td>
+                    <td>${transaction.reference}</td>
+                    <td>${transaction.notes}</td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+        
+        // تبديل التبويبات
+        function switchTab(tabName) {
+            // إخفاء جميع التبويبات
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // إزالة الفئة النشطة من جميع الأزرار
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // إظهار التبويب المحدد
+            document.getElementById(tabName + '-tab').classList.add('active');
+            event.target.classList.add('active');
+            
+            // تحميل البيانات حسب التبويب
+            if (tabName === 'transactions') {
+                displayTransactions();
+            }
+        }
+        
+        // وظائف المنتجات
+        function editProduct(id) {
+            const product = products.find(p => p.id === id);
+            alert(`تعديل ${product.name}\n\nسيتم فتح نموذج التعديل`);
+        }
+        
+        function addStock(id) {
+            const product = products.find(p => p.id === id);
+            const quantity = prompt(`إضافة مخزون لـ ${product.name}\n\nالكمية الحالية: ${product.stock}\n\nأدخل الكمية المضافة:`);
+            
+            if (quantity && !isNaN(quantity) && quantity > 0) {
+                alert(`تم إضافة ${quantity} وحدة إلى ${product.name}`);
+            }
+        }
+        
+        function transferProduct(id) {
+            const product = products.find(p => p.id === id);
+            alert(`نقل ${product.name}\n\nسيتم فتح نموذج النقل`);
+        }
+        
+        function viewHistory(id) {
+            const product = products.find(p => p.id === id);
+            alert(`تاريخ معاملات ${product.name}\n\nسيتم عرض تاريخ جميع المعاملات`);
+        }
+        
+        function addProduct() {
+            alert('إضافة منتج جديد\n\nسيتم فتح نموذج إضافة منتج جديد');
+        }
+        
+        // تحميل البيانات عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            updateWarehouseInfo();
+            displayProducts();
+        });
+    </script>
+</body>
+</html>
