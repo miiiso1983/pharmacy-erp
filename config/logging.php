@@ -46,7 +46,7 @@ return [
     | of powerful log handlers and formatters that you're free to use.
     |
     | Available drivers: "single", "daily", "slack", "syslog",
-    |                    "errorlog", "monolog", "custom", "stack"
+    |                    "monolog", "custom", "stack"
     |
     */
 
@@ -112,11 +112,7 @@ return [
             'replace_placeholders' => true,
         ],
 
-        'errorlog' => [
-            'driver' => 'errorlog',
-            'level' => env('LOG_LEVEL', 'debug'),
-            'replace_placeholders' => true,
-        ],
+
 
         'null' => [
             'driver' => 'monolog',
