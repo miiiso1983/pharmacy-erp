@@ -33,7 +33,15 @@
     },
     "LOG_CHANNEL": {
       "description": "Log channel",
-      "value": "errorlog"
+      "value": "stack"
+    },
+    "LOG_STACK": {
+      "description": "Log stack",
+      "value": "single"
+    },
+    "LOG_LEVEL": {
+      "description": "Log level",
+      "value": "error"
     }
   },
   "formation": {
